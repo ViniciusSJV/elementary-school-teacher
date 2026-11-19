@@ -6,7 +6,7 @@ The most patient senior dev in the room, as an agent skill.
 
 ## Real example
 
-Question: *"how does glass work in this renderer?"*, asked about a ray tracer written in Rust, on the same model, in fresh sessions with and without the skill. Both answers are real and unedited.
+Question: *"how does glass work in this renderer?"*, asked about a ray tracer written in Rust, without and with the skill. Both answers are real and unedited, each from a fresh session.
 
 **With the skill**
 
@@ -25,57 +25,67 @@ Question: *"how does glass work in this renderer?"*, asked about a ray tracer wr
 <details>
 <summary>Without the skill (click to expand)</summary>
 
-Glass works the way it does in The Ray Tracer Challenge (chapter 11). It isn't its own material type. It's an ordinary Phong material with three fields set, and the ray tracer recursively traces a reflected ray and a refracted ray, then blends them using Fresnel.
-1. The material: materials.rs:35-41
+Glass is a Whitted-style recursive ray tracer that follows The Ray Tracer Challenge. It isn't a special shader. It's a regular Phong material with three settings, plus some recursion in World::shade_hit.
+
+1. The material
+materials.rs:35-41:
 
 ```rust
 pub fn glass() -> Self {
     let mut material = Material::phong();
     material.transparency = 1.;
     material.reflective = 1.;
-    material.reflactive_index = 1.5;   // (sic: "reflactive")
+    material.reflactive_index = 1.5;   // (sic: refractive index)
     material
 }
 ```
 
-Any material with `transparency > 0` behaves like glass. Scenes adjust it further. For example, cena_video.rs:53-58 adds a light blue tint, lowers `diffuse` and `ambient` so the surface shading doesn't wash it out, and raises `shininess` for tight highlights.
-2. Finding n1 and n2: intersection.rs:76-105
-To refract a ray you need the refractive index on each side of the surface. `prepare_computations` walks the sorted list of intersections and keeps a stack (`containers`) of the objects the ray is currently inside:
+The scenes then make it nearly invisible as a surface. cena_video.rs:53-58 sets low ambient and diffuse, high specular and shininess, and a slight blue tint. So almost all of what you see comes from the reflected and refracted rays, not from Phong shading.
 
-* n1 is the index of the innermost object just before the hit, or 1.0 (air) if the ray isn't inside anything.
-* Then the hit object is pushed onto the stack (entering) or popped off it (leaving).
-* n2 is the index of the innermost object just after the hit.
+2. Working out n1 and n2 for each hit
+intersection.rs:79-107 (prepare_computations) goes through every intersection along the ray, sorted by t, and keeps a containers stack of the objects the ray is currently inside. A hit pushes the object onto the stack, and a second hit on the same object pops it off.
 
-Because of this, nested objects work, like an air bubble inside a glass sphere or glass inside water.
-It also computes `under_point = point - normal * EPSILON` (intersection.rs:38). The refracted ray starts just below the surface so it doesn't hit the same surface again (acne). Reflected rays use `over_point` instead.
-3. Refracted ray (Snell's law): world.rs:74-90
+- n1 is the index of the top object on the stack just before the hit (1.0 if the stack is empty, meaning air).
+- n2 is the index of the top object just after the hit.
+
+This makes nested or overlapping transparent objects work, such as an air bubble inside glass.
+
+Computations::from also builds two offset points:
+
+- over_point (point + normal·ε) starts reflection and shadow rays.
+- under_point (point − normal·ε) starts the refraction ray just inside the surface, so it doesn't hit the same surface again.
+
+If the normal points away from the eye, the hit is from inside the object. In that case inside = true and the normal is flipped.
+
+3. Refraction (Snell's law)
+world.rs:74-90:
+
+- n_ratio = n1/n2, cos_i = eye·normal, sin²t = n_ratio²·(1 − cos_i²)
+- If sin²t > 1, that's total internal reflection, and the refraction ray returns black. The light continues through the reflection ray instead.
+- Otherwise the new direction is normal·(n_ratio·cos_i − cos_t) − eye·n_ratio. The ray starts at under_point, and its color is multiplied by transparency.
+
+4. Fresnel blend (Schlick)
+In world.rs:56-60, if a material is both reflective and transparent, the reflected and refracted colors are blended instead of added:
 
 ```rust
-let n_ratio = n1 / n2;
-let cos_i   = eye_v · normal_v;
-let sin2_t  = n_ratio² * (1 - cos_i²);
-if sin2_t > 1 { return black }          // total internal reflection
-let cos_t   = sqrt(1 - sin2_t);
-let direction = normal_v * (n_ratio*cos_i - cos_t) - eye_v * n_ratio;
-color_at(Ray::new(under_point, direction), remaining - 1) * transparency
+surface + reflected * R + refracted * (1 - R)
 ```
 
-Under total internal reflection, refraction adds nothing and only the reflected ray carries light. `remaining` is the recursion budget. When it reaches 0, the function returns black.
-4. Combining the parts with Fresnel: world.rs:45-63
-`shade_hit` adds up the Phong surface color, the reflected color and the refracted color. If the material is both reflective and transparent (as glass is), it weights the two rays with Schlick's approximation:
+R comes from Computations::schlick (intersection.rs:48-61):
 
-```rust
-surface + reflected * reflectance + refracted * (1 - reflectance)
-```
+- r0 = ((n1−n2)/(n1+n2))²
+- R = r0 + (1−r0)(1−cos)⁵
 
-5. Schlick: intersection.rs:48-61
-`r0 = ((n1-n2)/(n1+n2))²`, then `r0 + (1-r0)(1-cos)^5`. When the ray goes from a denser medium to a lighter one (n1 > n2), it uses `cos_t` instead of `cos_i`, and it returns 1.0 under total internal reflection. The result is that glass looks transparent when you look at it straight on and becomes mirror-like at grazing angles (the edges of the teapot).
+When going from a denser to a less dense medium (n1 > n2), it uses cos_t instead and returns 1.0 under total internal reflection. This is why glass edges look like mirrors while the centre is see-through.
+
+5. Recursion limit
+Each reflection or refraction ray calls color_at(ray, remaining - 1). When remaining reaches 0, it returns black. A ray that misses everything also returns black, because there's no environment map.
+
 Limitations
-
-* Shadows: world.rs:92-107 counts any hit as blocking the light, so glass casts a fully black shadow just like an opaque object. A common fix is to skip objects with `transparency > 0` in `is_shadowed`, or scale the shadow by transparency.
-* No absorption or dispersion: the tint comes only from the surface `color` in the Phong term. Thicker glass doesn't get darker or more colored, and there are no prism or rainbow effects.
-* No caustics: this is a Whitted-style ray tracer, so light focused through glass onto the floor isn't simulated.
-* Rays that miss everything return black (`color_at`), so whatever is behind the glass needs a backdrop in the scene, or the glass looks dark.
+- Glass casts solid shadows. is_shadowed (world.rs:92-106) treats any hit closer than the light as a full shadow, whatever the material's transparency. There's no caustics or light transmission.
+- No absorption. Thicker glass isn't darker or more tinted (no Beer–Lambert). The color tint only affects the Phong surface term.
+- No dispersion or rough glass. One index of refraction for all wavelengths, and perfectly sharp refraction.
+- Possible issue with grouped meshes. n1/n2 are tracked by comparing Object equality. For a triangle mesh like the teapot, each triangle is probably its own Object. If so, the containers stack sees the entry and exit as different objects, and n1/n2 inside the mesh could be wrong. I haven't checked how Object equality behaves for BVH triangles, so this is a guess, not something I confirmed.
 
 </details>
 
