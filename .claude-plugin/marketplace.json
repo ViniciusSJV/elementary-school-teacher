@@ -1,0 +1,11 @@
+{
+  "name": "elementary-school-teacher",
+  "owner": { "name": "ViniciusSJV" },
+  "plugins": [
+    {
+      "name": "elementary-school-teacher",
+      "source": "./",
+      "description": "Makes AI agents explain code like a patient teacher: simple, fast, and still correct."
+    }
+  ]
+}

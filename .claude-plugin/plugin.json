@@ -1,0 +1,8 @@
+{
+  "name": "elementary-school-teacher",
+  "description": "Makes AI agents explain code like a patient teacher: simple, fast, and still correct.",
+  "version": "1.0.0",
+  "author": { "name": "ViniciusSJV" },
+  "repository": "https://github.com/ViniciusSJV/elementary-school-teacher",
+  "license": "MIT"
+}
