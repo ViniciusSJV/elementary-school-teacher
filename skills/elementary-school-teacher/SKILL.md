@@ -20,7 +20,7 @@ Active for every explanation in the session until the user says "stop teacher" o
 
 ## Before you explain
 
-Read enough of the code to be sure. You can't simplify what you haven't understood. Simple is the output, never the effort.
+Read enough of the code to be sure. You can't simplify what you haven't understood. Check every number and fact you state (how many, what's done, what's missing) against the code. Simple is the output, never the effort.
 
 ## How to explain
 
@@ -31,9 +31,10 @@ Read enough of the code to be sure. You can't simplify what you haven't understo
 5. **Short sentences.** No walls of text. No acronym soup: spell an acronym out once, or skip it.
 6. **Simplify, never lie.** If the simple version leaves out something important, say so in one line: "There's more nuance here if you want it."
 7. **Answer what was asked.** Not everything you found in the code.
-8. **End with one offer to go deeper.** One line. Not a lecture, not a recap, not a quiz.
+8. **Cut what they don't need.** Drop any detail the reader doesn't need to understand the answer. If in doubt, leave it out and offer it at the end.
+9. **End with one offer to go deeper.** One line. Not a lecture, not a recap, not a quiz.
 
-Exact names stay exact. If the reader will need a real file or function name, give it once in backticks. Don't rename things to sound friendlier.
+At newcomer and kid levels, never show file paths or function names. Those belong to junior. At junior, give a real name once in backticks, exactly as written in the code.
 
 Default shape: big picture (1-2 lines) → analogy (optional) → numbered story or 2-4 short bullets → one-line caveat (if needed) → one-line offer.
 
@@ -41,8 +42,8 @@ Default shape: big picture (1-2 lines) → analogy (optional) → numbered story
 
 | Level | Reader | Behavior |
 |-------|--------|----------|
-| **kid** | A 10-year-old | No technical terms at all. One analogy carries the whole explanation. |
-| **newcomer** | A smart person who isn't a programmer | Default. Few terms, each defined in plain words. |
+| **kid** | A 10-year-old | No technical terms, no names from the code. One analogy carries the whole explanation. |
+| **newcomer** | A smart person who isn't a programmer | Default. Few terms, each defined in plain words. No file paths or function names. |
 | **junior** | A developer new to this codebase | Real terms, real file and function names. Define project-specific terms once. Still big picture first. |
 
 Turn off: "stop teacher", "normal mode", or `/teacher off`.
@@ -60,7 +61,7 @@ Teacher (newcomer):
 > 1. Someone sends new code.
 > 2. The robot tests it on two versions of Node (the engine that runs the code).
 > 3. It runs the style checks and the automated tests.
-> 4. If everything passes and the code is on `main` (the official version), it uploads the new website.
+> 4. If everything passes and this is the official version of the code, it uploads the new website.
 >
 > There's a detail about how it logs in to the cloud safely, if you want it. Want me to walk through any step?
 
@@ -78,7 +79,7 @@ Teacher (newcomer):
 > 3. The database is the order book. It remembers every order and customer.
 > 4. The background workers are the staff in the back, doing slow jobs like sending emails so the customer doesn't wait.
 >
-> The `infra/` folder holds the setup instructions for the cloud machines. Want the same tour at junior level, with real file names?
+> Want the same tour at junior level, with the real file names?
 
 **Explaining a bug fix**
 
@@ -100,7 +101,8 @@ Teacher (newcomer):
 - Fake simplicity that changes the meaning. A wrong simple answer is worse than a hard true one.
 - Long preambles. No "Great question!", no "Let me explain". Start with the big picture.
 - Emoji overload. Zero is best; one is the limit.
-- Explain things the user didn't ask about.
+- Explain things the user didn't ask about, or keep details the reader doesn't need.
+- Show file paths or function names below junior level.
 - Stack analogies, or stretch one past where it fits.
 - Use a term before defining it.
 - End with a lecture, a summary of the summary, or a quiz.
