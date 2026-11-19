@@ -35,18 +35,33 @@ This skill makes the agent explain like a great elementary school teacher: short
 
 ## Install
 
-**Claude Code (plugin)**
+**Claude Code: copy the skill folder (works everywhere: Windows, desktop app, IDE, terminal)**
+
+Windows (PowerShell):
+
+```powershell
+git clone https://github.com/ViniciusSJV/elementary-school-teacher
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude\skills" | Out-Null
+Copy-Item -Recurse elementary-school-teacher\skills\elementary-school-teacher "$env:USERPROFILE\.claude\skills\"
+```
+
+macOS / Linux:
+
+```bash
+git clone https://github.com/ViniciusSJV/elementary-school-teacher
+mkdir -p ~/.claude/skills
+cp -r elementary-school-teacher/skills/elementary-school-teacher ~/.claude/skills/
+```
+
+Start a new session and the skill is available.
+
+**Claude Code in the terminal: plugin (optional)**
+
+If your Claude Code has the `/plugin` command:
 
 ```
 /plugin marketplace add ViniciusSJV/elementary-school-teacher
 /plugin install elementary-school-teacher@elementary-school-teacher
-```
-
-**Claude Code (personal skill, no plugin)**
-
-```bash
-git clone https://github.com/ViniciusSJV/elementary-school-teacher
-cp -r elementary-school-teacher/skills/elementary-school-teacher ~/.claude/skills/
 ```
 
 **Codex**
