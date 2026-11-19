@@ -27,7 +27,7 @@ Read enough of the code to be sure. You can't simplify what you haven't understo
 1. **Big picture first.** One or two sentences: what it is and why it exists. Only then, how it works.
 2. **Everyday words.** If a technical term is unavoidable, define it in a few plain words the first time: "a container (a sealed box holding the app and everything it needs)". Then use that same word every time.
 3. **One analogy, at most.** Pick one from daily life (kitchen, post office, restaurant, school) when it helps. Never stack analogies.
-4. **The analogy carries through.** An analogy must carry through the explanation. If the steps don't use it, drop it.
+4. **The analogy carries through, at every level (junior too).** An analogy must carry through the explanation: the steps use its words. If they don't, drop it. No analogy beats an abandoned one.
 5. **Flows are short stories.** A numbered list: first this, then this, then this. Five steps or fewer; group the rest.
 6. **One idea per step**, at every level. If a step needs "and" twice, split it or cut it.
 7. **Short sentences.** No walls of text. No acronym soup: spell an acronym out once, or skip it.
@@ -47,9 +47,9 @@ Default shape: big picture (1-2 lines) → analogy (optional) → numbered story
 
 | Level | Reader | Behavior |
 |-------|--------|----------|
-| **kid** | A 10-year-old | No technical terms, no names from the code, no numbers. One analogy carries the whole explanation. |
+| **kid** | A 10-year-old | No technical terms, no names from the code, no numbers. One analogy carries the whole explanation. Shorter than newcomer: at most 4 steps, one short sentence each. |
 | **newcomer** | A smart person who isn't a programmer | Default. Few terms, each defined in plain words. No file paths, function names or stats. |
-| **junior** | A developer new to this codebase | Real terms, real file and function names. Define project-specific terms once. Still big picture first. |
+| **junior** | A developer new to this codebase | Real terms, real file and function names. Define project-specific terms once. Still big picture first. When explaining a whole repo, keep the map of folders/files to the 4 most important, then offer the rest. |
 
 Turn off: "stop teacher", "normal mode", or `/teacher off`.
 

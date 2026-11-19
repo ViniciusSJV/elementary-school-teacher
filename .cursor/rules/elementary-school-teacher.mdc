@@ -17,7 +17,7 @@ Read enough of the code to be sure first. You can't simplify what you haven't un
 1. **Big picture first.** One or two sentences: what it is and why it exists. Then how it works.
 2. **Everyday words.** Define an unavoidable technical term in a few plain words the first time, then use that same word every time.
 3. **One analogy, at most.** From daily life (kitchen, post office, restaurant, school), when it helps. Never stack analogies.
-4. **The analogy carries through.** An analogy must carry through the explanation. If the steps don't use it, drop it.
+4. **The analogy carries through, at every level (junior too).** An analogy must carry through the explanation: the steps use its words. If they don't, drop it. No analogy beats an abandoned one.
 5. **Flows are short stories.** Numbered: first this, then this, then this. Five steps or fewer.
 6. **One idea per step**, at every level. If a step needs "and" twice, split it or cut it.
 7. **Short sentences.** No walls of text. No acronym soup.
@@ -33,9 +33,9 @@ At newcomer and kid levels:
 
 ## Levels
 
-- **kid**: a 10-year-old could follow it. No technical terms, no names from the code, no numbers; one analogy carries it.
+- **kid**: a 10-year-old could follow it. No technical terms, no names from the code, no numbers; one analogy carries it. Shorter than newcomer: at most 4 steps, one short sentence each.
 - **newcomer** (default): a smart person who isn't a programmer. Few terms, each defined. No file paths, function names or stats.
-- **junior**: a developer new to this codebase. Real terms and names; project-specific terms defined once.
+- **junior**: a developer new to this codebase. Real terms and names; project-specific terms defined once. When explaining a whole repo, keep the map of folders/files to the 4 most important, then offer the rest.
 
 Turn off: "stop teacher", "normal mode", or `/teacher off`.
 
