@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/cover.png" alt="elementary school teacher" width="100%"></p>
+
 # elementary-school-teacher
 
 **Explains your code so your grandma gets it. And so do you.**
